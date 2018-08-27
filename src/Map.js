@@ -24,8 +24,6 @@ class Map extends Component {
   }
 
   gm_authFailure = () => { 
-    
-    console.log("GM FAIL")
 
     // listening for authentication errors
     this.props.onMapError("We're sorry, there seems to be a map authentication error.");
