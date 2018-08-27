@@ -9,7 +9,34 @@ class Map extends Component {
   };
 
   componentDidMount() {
-    const { locations } = this.props;
+    window.initMap = this.initMap
+    window.gm_authFailure = this.gm_authFailure
+    const script = document.createElement("script");
+    script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyAzHQs52tXl-Nt0ocNgxwTOFjAG1qLSidI";
+    script.async = true;
+    script.defer = true;
+    // in case of script load error
+    script.onerror = () => this.props.onMapError("We're sorry, the map couldn't be loaded.");
+    script.onload = () => this.initMap()
+    const map = document.getElementById("map")
+    map.appendChild(script);
+
+  }
+
+  gm_authFailure = () => { 
+    
+    console.log("GM FAIL")
+
+    // listening for authentication errors
+    this.props.onMapError("We're sorry, there seems to be a map authentication error.");
+
+  };
+
+  initMap = () => {
+
+    const { locations, onSelectionChange, selectedLocation, onArticleOpen, onMapError } = this.props;
+
+    onMapError("");
 
     let infoWindow = new window.google.maps.InfoWindow();
 
@@ -33,11 +60,10 @@ class Map extends Component {
       infoWindow: infoWindow,
       bounds: bounds
     });
-
   }
 
   createMarkers = map => {
-    const { locations, onSelectionChange, selectedLocation } = this.props;
+    const { locations, onSelectionChange, selectedLocation, onArticleOpen, onMapError } = this.props;
     let markers = [];
 
     for (var i = 0; i < locations.length; i++) {
@@ -61,7 +87,7 @@ class Map extends Component {
   };
 
   filterMarkers = () => {
-    const { locations, onSelectionChange, selectedLocation } = this.props;
+    const { locations, onSelectionChange, selectedLocation, onArticleOpen, onMapError } = this.props;
     let { map, markers, infoWindow, bounds } = this.state;
 
 	// selects the markers that should be showed
@@ -75,7 +101,7 @@ class Map extends Component {
         });
         return keep;
       })
-      .map(marker => {
+      .forEach(marker => {
       	// showes them
         marker.setMap(map);
         marker.setAnimation(null);
@@ -97,7 +123,7 @@ class Map extends Component {
         });
         return keep;
       })
-      .map(marker => {
+      .forEach(marker => {
       	// hides them
         marker.setMap(null);
         if (selectedLocation === marker.id) {
@@ -111,12 +137,7 @@ class Map extends Component {
   openInfoWindow = marker => {
     let { map, markers, infoWindow, bounds } = this.state;
 
-    const {
-      locations,
-      onSelectionChange,
-      selectedLocation,
-      onArticleOpen
-    } = this.props;
+    const { locations, onSelectionChange, selectedLocation, onArticleOpen, onMapError } = this.props;
 
     // creates the DOM elements displayed inside the info window
     let infoWindowContent = document.createElement("div");
@@ -139,11 +160,13 @@ class Map extends Component {
   };
 
   render() {
+
     const {
       locations,
       onSelectionChange,
       selectedLocation,
-      onArticleOpen
+      onArticleOpen,
+      onMapError
     } = this.props;
 
     this.filterMarkers();

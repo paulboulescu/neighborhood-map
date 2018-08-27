@@ -6,25 +6,34 @@ class Article extends Component {
     name: "",
     contact: {},
     location: {},
-    canonicalUrl: ""
+    canonicalUrl: "",
+    errorMessage: ""
   };
 
   componentDidMount() {
     document.getElementsByClassName("close-article-icon")[0].focus();
     const { onArticleClose, articleState, selectedLocation } = this.props;
-    PlacesAPI.getPlace(selectedLocation).then(data =>
-      this.setState({
-        name: data.response.venue.name,
-        contact: data.response.venue.contact,
-        location: data.response.venue.location,
-        canonicalUrl: data.response.venue.canonicalUrl
-      })
+    PlacesAPI.getPlace(selectedLocation).then(data => {
+      if (data.type==='error'){
+        this.setState({
+          errorMessage: data.errorMessage
+        })
+      }else{
+        this.setState({
+          name: data.response.venue.name,
+          contact: data.response.venue.contact,
+          location: data.response.venue.location,
+          canonicalUrl: data.response.venue.canonicalUrl,
+          errorMessage: ''
+        })
+      }
+    }
     );
   }
 
   render() {
     const { onArticleClose, articleState, selectedLocation } = this.props;
-    let { name, contact, location, canonicalUrl } = this.state;
+    let { name, contact, location, canonicalUrl, errorMessage } = this.state;
     
     return (
       <div className="article-container">
@@ -37,8 +46,12 @@ class Article extends Component {
             aria-label="Back"
           />
           
-          {name.length === 0 && (
+          {(name.length === 0 & errorMessage.length === 0) && (
             <div className="article-content article-result-message">Loading...</div>
+          )}
+
+          {(errorMessage.length !== 0) && (
+            <div className="article-content article-error-message">{errorMessage}</div>
           )}
           
           {/* details about the selected location */}

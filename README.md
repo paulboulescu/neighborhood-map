@@ -6,7 +6,9 @@ This is the 8th Project created under Udacity's Front-End Web Developer Nanodegr
 ## First Run
 1. Clone the repository `$ git clone https://github.com/paulboulescu/neighborhood-map.git`
 2. Install the project's dependencies `$ npm install`
-3. Start the development server `$ npm start`
+3. Create the production build `$ npm run build`
+4. Change the working directory to the production build `$ cd build`
+3. Start the server `$ npm start`
 4. Open the App using a browser at `/http://localhost:3000`
 
 ## Description

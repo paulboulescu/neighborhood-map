@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
 import escapeRegExp from 'escape-string-regexp';
-import sortBy from 'sort-by';
 import Menu from './Menu';
 import Content from './Content';
 import Article from './Article';
@@ -63,7 +62,8 @@ class App extends Component {
     ],
     selectedLocation: NaN,
     filterQuery: "",
-    articleState: "close"
+    articleState: "close",
+    mapError: ""
   };
 
   // a kewyword was entered inside the filter input field
@@ -110,13 +110,20 @@ class App extends Component {
     }
   };
 
+  onMapError = (data) => {
+    this.setState({
+      mapError: data
+    })
+  }
+
   render() {
     let {
       menuState,
       locations,
       selectedLocation,
       filterQuery,
-      articleState
+      articleState,
+      mapError
     } = this.state;
 
     let showingLocations;
@@ -149,6 +156,8 @@ class App extends Component {
           onSelectionChange={this.onSelectionChange}
           selectedLocation={selectedLocation}
           onArticleOpen={this.onArticleOpen}
+          onMapError={this.onMapError}
+          mapError={mapError}
         />
         {/* this component will store details about a selected location */}
         {articleState === "open" && (

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Route } from "react-router-dom";
 import Map from "./Map";
 
 class Content extends Component {
@@ -10,7 +9,9 @@ class Content extends Component {
       onMenuStateChange,
       onSelectionChange,
       selectedLocation,
-      onArticleOpen
+      onArticleOpen,
+      onMapError,
+      mapError
     } = this.props;
 
     return (
@@ -23,6 +24,7 @@ class Content extends Component {
             onClick={onMenuStateChange}
             aria-label="Menu"
           />
+          <div className="header-error">{mapError}</div>
         </div>
     	{/* the component which stores the Google Map */}
         <Map
@@ -30,6 +32,7 @@ class Content extends Component {
           onSelectionChange={onSelectionChange}
           selectedLocation={selectedLocation}
           onArticleOpen={onArticleOpen}
+          onMapError={onMapError}
         />
       </div>
     );
